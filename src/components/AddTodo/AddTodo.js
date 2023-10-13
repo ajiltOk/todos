@@ -15,7 +15,7 @@ export default function AddTodo({ onCreate }) {
     return(
         <form onSubmit={submitHendler}>
             <input value={value} onChange={event => setValue(event.target.value)} />
-            <button type="submit">Add todo</button>
+            <button type="submit">{ "Add todo" }</button>
         </form>
     )
 }

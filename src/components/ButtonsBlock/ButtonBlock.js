@@ -1,4 +1,4 @@
-import ControlButton from "../ControlButton/ControlButton";
+import ControlButton from "../Button/Button";
 
 const buttons = [
     {active: false, title: "All"},
@@ -11,7 +11,7 @@ export default function ButtonBlock({ showTodos }) {
         <ul>
             { buttons.map(button => {
                 return(
-                    <ControlButton showTodos={ showTodos } button={ button } key={ button.title } />
+                    <ControlButton showTodos={showTodos} buttonTitle={ button.title } key={ button.title } />
                 )
             }) }
         </ul>

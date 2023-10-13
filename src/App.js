@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import TodoList from "../src/components/TodoList/TodoList"
 import AddTodo from "../src/components/AddTodo/AddTodo"
-import RemoveButton from "./components/RemoveButton/RemoveButton"
 import ButtonBlock from './components/ButtonsBlock/ButtonBlock'
+import ControlButton from './components/Button/Button'
 
 function App() {
   const [todos, setTodos] = useState([])
@@ -71,7 +71,7 @@ function App() {
     }
   }
   
-  function removeTodo() {
+  function removeCompletedTodo() {
     setTodos(todos.filter(todo => 
       todo.completed === false
     ))
@@ -91,15 +91,21 @@ function App() {
     }
   } 
 
+  function deleteTodo(title) {
+    setTodos(todos.filter(todo => todo.title !== title))
+
+    setAllTodos(allTodos.filter(todo => todo.title !== title))
+  }
+
   return (
     <div>
       <h1>todos</h1>
-      <AddTodo onCreate={addTodo} />
-      {todos.length ? <TodoList todos={ todos } onToggle={toggleTodo} /> : <p>No todos</p>}
+      <AddTodo onCreate={ addTodo } />
+      {todos.length ? <TodoList todos={ todos } onToggle={ toggleTodo } removeTodo={ deleteTodo } /> : <p>No todos</p>}
       <div>
         <span>{ count }{ text }</span>
-        <ButtonBlock showTodos={toggleTodos} />
-        <RemoveButton removeList={removeTodo} />
+        <ButtonBlock />
+        <ControlButton removeCompletedTodo={ removeCompletedTodo } buttonTitle={ "Clear completed" } />
       </div>
   </div>
   );
