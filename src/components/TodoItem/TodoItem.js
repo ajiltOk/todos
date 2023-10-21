@@ -10,24 +10,25 @@ export default function TodoItem( {todo, onChange, removeTodo} ) {
 
     const [todoValue, setTodoValue] = useState(todoTitle);
 
-    const [isEdit, setIsEdit] = useState(false);
+    const [isEdit, setIsEdit] = useState(true);
 
     const inputElemnt = useRef(null)
 
 
     const handleChange = (event) => {
+        event.preventDefault()
+
         setTodoTitle(event.target.value); 
     }
 
-    const handlerFocus = () => {
+    const handleFocus = () => {
         setTodoValue(todoTitle)
     }
 
-    const handlerBlur = () => {
-
+    const handleBlur = () => {
         setTodoTitle(todoValue)
 
-        setIsEdit(false)
+        setIsEdit(true)
 
         setAvailability(true)
     }
@@ -35,15 +36,13 @@ export default function TodoItem( {todo, onChange, removeTodo} ) {
     function changeTodo() { 
         setAvailability(false)
 
-        setIsEdit(true)
-
-        inputElemnt.current.focus()
+        setIsEdit(false)
     }
 
     function saveTodo() {
         setAvailability(true)
 
-        setIsEdit(false)
+        setIsEdit(true)
     }
 
     let done;
@@ -54,12 +53,12 @@ export default function TodoItem( {todo, onChange, removeTodo} ) {
 
     return(
         <li>
-            <input type="checkbox" onChange={() => onChange(todo.title)} checked={todo.completed} />
-            <input ref={ inputElemnt } value={ todoTitle } onChange={ handleChange } onFocus={ handlerFocus} onBlur={ handlerBlur } disabled={ availability } className={done} />
+            <input type="checkbox" onChange={ () => onChange(todo.title) } checked={ todo.completed } />
+            <input ref={ inputElemnt } value={ todoTitle } onChange={ handleChange } onFocus={ handleFocus} onBlur={ handleBlur } disabled={ availability } className={done} />
             <div>
-                {isEdit && <Button buttonTitle={ 'Save' } todo={ todo } saveTodo={ saveTodo } />}
-                {!isEdit && <Button buttonTitle={ 'Edit' } todo={ todo } changeTodo={ changeTodo } />}
-                <Button buttonTitle={ "Delete" } todo={ todo } removeTodo={removeTodo} />
+                {isEdit && <Button children={ "Edit" } clickOnEdit={ changeTodo } />}
+                {!isEdit && <Button children={ "Save" } clickOnSave={ saveTodo } />}
+                <Button children={ "Delete" } todo={ todo } clickOnDelete={ removeTodo } />
             </div>
         </li>
     )

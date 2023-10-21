@@ -1,7 +1,6 @@
 import TodoItem from "../TodoItem/TodoItem";
 
 export default function TodoList( props ) {
-   
 
     return(
         <ul>

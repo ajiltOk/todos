@@ -1,15 +1,21 @@
-export default function Button({ removeCompletedTodo, removeTodo, changeTodo, saveTodo, todo, buttonTitle }) {
+import React from 'react'
+
+export default function Button({ todo, children, clickOnEdit, clickOnSave, clickOnDelete, removeCompletedTodos }) {
+    function handleClick() {
+        switch(children){
+            case "Edit": clickOnEdit()
+            break
+            case "Save": clickOnSave()
+            break
+            case "Delete": clickOnDelete(todo.title)
+            break
+            case "Active": removeCompletedTodos()
+            break
+        }
+
+    }
+
     return(
-        <button onClick={() => {
-            if(buttonTitle === "Clear completed") {
-                removeCompletedTodo()
-            } else if(buttonTitle === "Delete") {
-                removeTodo(todo.title)
-            } else if(buttonTitle === "Edit") {
-                changeTodo()
-            } else if(buttonTitle === "Save") {
-                saveTodo()
-            }
-        }}>{ buttonTitle }</button>
+        <button onClick={ handleClick }>{ children }</button>
     )
 }
