@@ -1,65 +1,70 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import styles from "../TodoItem/Todoitem.module.scss"
-import Button from "../Button/Button";
+import ButtonControl from '../Button/ButtonControl'
 
-export default function TodoItem( {todo, onChange, removeTodo} ) {
+export default function TodoItem( props ) {
+    const [todoTitle, setTodoTitle] = useState(props.todo)
 
-    const [todoTitle, setTodoTitle] = useState(todo.title);
+    const [isEdit, setIsEdit] = useState(false)
 
-    const [availability, setAvailability] = useState(true);
+    const [isChecked, setIsChecked] = useState(false);
 
-    const [todoValue, setTodoValue] = useState(todoTitle);
+    const inputRef = useRef(null);
 
-    const [isEdit, setIsEdit] = useState(true);
+    useEffect(() => {
+        if(isEdit){
+            inputRef.current.focus()
+        }
+    },[isEdit])
 
-    const inputElemnt = useRef(null)
+    const onButtonEditClick = () => {
+        setIsEdit(true)
+        setTodoTitle(props.todo)
+    }
 
+    const onButtonSaveClick = () => {
+        props.renameTodo(props.index, todoTitle)
+    }
+
+    const onButtonDelClick = () => {
+        props.removeTodo(props.index)
+        props.decreaseCounter()
+    }
 
     const handleChange = (event) => {
-        event.preventDefault()
-
-        setTodoTitle(event.target.value); 
+        setTodoTitle(event.target.value)
     }
 
-    const handleFocus = () => {
-        setTodoValue(todoTitle)
-    }
-
-    const handleBlur = () => {
-        setTodoTitle(todoValue)
-
-        setIsEdit(true)
-
-        setAvailability(true)
-    }
-
-    function changeTodo() { 
-        setAvailability(false)
-
+    const handleBlur = (event) => {
         setIsEdit(false)
+        
     }
 
-    function saveTodo() {
-        setAvailability(true)
+    const handleCheckboxChange = () => {
+        setIsChecked(!isChecked)
 
-        setIsEdit(true)
-    }
+        if(isChecked) {
+            props.decreaseCounter()
+            //props.checkedTodo()
+        } else {
+            props.increaseCounter()
+        }
+        
+    };
 
     let done;
 
-    if(todo.completed) {
+    if(isChecked) {
         done = styles.done
     }
 
-    return(
-        <li>
-            <input type="checkbox" onChange={ () => onChange(todo.title) } checked={ todo.completed } />
-            <input ref={ inputElemnt } value={ todoTitle } onChange={ handleChange } onFocus={ handleFocus} onBlur={ handleBlur } disabled={ availability } className={done} />
-            <div>
-                {isEdit && <Button children={ "Edit" } clickOnEdit={ changeTodo } />}
-                {!isEdit && <Button children={ "Save" } clickOnSave={ saveTodo } />}
-                <Button children={ "Delete" } todo={ todo } clickOnDelete={ removeTodo } />
-            </div>
-        </li>
-    )
+    return (
+        <div>
+            <input type="checkbox" onChange={ handleCheckboxChange } checked={ isChecked } />
+            <input ref={ inputRef } type="text" value={ isEdit ? todoTitle : props.todo } onChange={ handleChange } disabled= { !isEdit } onBlur={ handleBlur } className={done} />
+            {!isEdit && <ButtonControl children={ "Edit" } onClick={ onButtonEditClick } />}
+            {isEdit && <ButtonControl children={ "Save" } onClick={ onButtonSaveClick} />}
+            <ButtonControl children={ "Delete" } onClick={ onButtonDelClick } />
+        </div>
+    );
 }

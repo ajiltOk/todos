@@ -1,18 +1,21 @@
 import TodoItem from "../TodoItem/TodoItem";
 
 export default function TodoList( props ) {
-
     return(
         <ul>
-            { props.todos.map( todo => {
+            { props.todos.map( (todo, index) => { 
                 return(
-                    <div key={ todo.title }>
+                    <li key={ todo.title }>
                         <TodoItem 
-                            todo={ todo }  
-                            onChange={ props.onToggle }
+                            todo={ todo.title } 
+                            decreaseCounter={ props.decrement }
+                            increaseCounter={ props.increment }
                             removeTodo={ props.removeTodo }
+                            checkedTodo={ props.checkedTodo }
+                            renameTodo={ props.renameTodo }
+                            index={ index }
                         />
-                    </div>
+                    </li>
                 )
             }) }
         </ul>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import ButtonControl from '../Button/ButtonControl'
 
-export default function AddTodo({ onCreate }) {
+export default function AddTodo( {onCreate, increment} ) {
     const [value, setValue] = useState("")
 
     function submitHendler(event) {
@@ -10,12 +11,14 @@ export default function AddTodo({ onCreate }) {
             onCreate(value)
             setValue("")
         }
+
+        increment()
     }
 
     return(
         <form onSubmit={submitHendler}>
-            <input value={value} onChange={event => setValue(event.target.value)} />
-            <button type="submit">{ "Add todo" }</button>
+            <input value={ value } onChange={ (event) => setValue(event.target.value) } />
+            <ButtonControl children={ "Add todo" } type="submit" />
         </form>
     )
 }
