@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ButtonControl from '../Button/ButtonControl'
 
-export default function AddTodo( {onCreate, increment} ) {
+export default function AddTodo( {onCreate} ) {
     const [value, setValue] = useState("")
 
     function submitHendler(event) {
@@ -11,8 +11,6 @@ export default function AddTodo( {onCreate, increment} ) {
             onCreate(value)
             setValue("")
         }
-
-        increment()
     }
 
     return(

@@ -1,7 +1,8 @@
-import React, {useState, useRef} from 'react'
+import React, { useState } from 'react'
 import TodoList from '../src/components/TodoList/TodoList'
 import AddTodo from '../src/components/AddTodo/AddTodo'
 import ButtonControl from './components/Button/ButtonControl'
+import uuid from 'react-uuid';
 
 function App() {
   const [todos, setTodos] = useState([])
@@ -9,21 +10,33 @@ function App() {
   function addTodo(value) {
     setTodos(todos.concat([
       {title: value,
-        completed: false 
+        completed: false,
+        checked: false,
+        id: uuid(),
       }
     ]))
   }
-  console.log(todos)
 
-  function removeTodo(indexElem) {
-    setTodos(todos.filter((_, index) => indexElem !== index))
+  function removeTodo(idElem) {
+    setTodos(todos.filter((todo) => idElem !== todo.id))
   }
    
-  function renameTodo(index, newTitle) {
+  function renameTodo(id, newTitle) {
     setTodos(prevState => {
-      const newState = [...prevState]
-      newState[index] = { ...newState[index], title: newTitle }
+      let newState = [...prevState]
+      newState.map((element) => {
+        if(element.id === id) {
+          element.title = newTitle
+        }
+        return element
+      })
       return newState
+    })
+  }
+
+  function checkedTodo(index, newTitle) {
+    setTodos(prevState => {
+
     })
   }
 

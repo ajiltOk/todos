@@ -1,13 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
-import styles from "../TodoItem/Todoitem.module.scss"
 import ButtonControl from '../Button/ButtonControl'
 
 export default function TodoItem( props ) {
     const [todoTitle, setTodoTitle] = useState(props.todo)
 
     const [isEdit, setIsEdit] = useState(false)
-
-    const [isChecked, setIsChecked] = useState(false);
 
     const inputRef = useRef(null);
 
@@ -23,45 +20,30 @@ export default function TodoItem( props ) {
     }
 
     const onButtonSaveClick = () => {
-        props.renameTodo(props.index, todoTitle)
+        props.renameTodo(props.id, todoTitle)
     }
 
     const onButtonDelClick = () => {
-        props.removeTodo(props.index)
-        props.decreaseCounter()
+        props.removeTodo(props.id)
     }
 
     const handleChange = (event) => {
         setTodoTitle(event.target.value)
     }
 
-    const handleBlur = (event) => {
+    const handleBlur = () => {
         setIsEdit(false)
-        
     }
 
     const handleCheckboxChange = () => {
-        setIsChecked(!isChecked)
-
-        if(isChecked) {
-            props.decreaseCounter()
-            //props.checkedTodo()
-        } else {
-            props.increaseCounter()
-        }
         
-    };
-
-    let done;
-
-    if(isChecked) {
-        done = styles.done
     }
+
 
     return (
         <div>
-            <input type="checkbox" onChange={ handleCheckboxChange } checked={ isChecked } />
-            <input ref={ inputRef } type="text" value={ isEdit ? todoTitle : props.todo } onChange={ handleChange } disabled= { !isEdit } onBlur={ handleBlur } className={done} />
+            <input type="checkbox" onChange={ handleCheckboxChange } checked={ props.todo.checked} />
+            <input ref={ inputRef } type="text" value={ isEdit ? todoTitle : props.todo } onChange={ handleChange } disabled= { !isEdit } onBlur={ handleBlur } />
             {!isEdit && <ButtonControl children={ "Edit" } onClick={ onButtonEditClick } />}
             {isEdit && <ButtonControl children={ "Save" } onClick={ onButtonSaveClick} />}
             <ButtonControl children={ "Delete" } onClick={ onButtonDelClick } />
