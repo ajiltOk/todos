@@ -1,52 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react'
 import ButtonControl from '../Button/ButtonControl'
 
-export default function TodoItem( props ) {
-    const [todoTitle, setTodoTitle] = useState(props.todo)
+export default function TodoItem(props) {
+  const [todoTitle, setTodoTitle] = useState(props.todo)
 
-    const [isEdit, setIsEdit] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
 
-    const inputRef = useRef(null);
+  const [isChecked, setIsChecked] = useState(props.checked)
 
-    useEffect(() => {
-        if(isEdit){
-            inputRef.current.focus()
-        }
-    },[isEdit])
+  const inputRef = useRef(null)
 
-    const onButtonEditClick = () => {
-        setIsEdit(true)
-        setTodoTitle(props.todo)
+  useEffect(() => {
+    if (isEdit) {
+      inputRef.current.focus()
     }
+  }, [isEdit])
 
-    const onButtonSaveClick = () => {
-        props.renameTodo(props.id, todoTitle)
-    }
+  const onButtonEditClick = () => {
+    setIsEdit(true)
+  }
 
-    const onButtonDelClick = () => {
-        props.removeTodo(props.id)
-    }
+  const onButtonSaveClick = () => {
+    props.renameTodo(props.id, todoTitle)
+  }
 
-    const handleChange = (event) => {
-        setTodoTitle(event.target.value)
-    }
+  const onButtonDelClick = () => {
+    props.removeTodo(props.id)
+  }
 
-    const handleBlur = () => {
-        setIsEdit(false)
-    }
+  const handleChange = (event) => {
+    setTodoTitle(event.target.value)
+  }
 
-    const handleCheckboxChange = () => {
-        
-    }
+  const handleCheckboxChange = () => {
+    props.checkedTodo(props.id)
+    setIsChecked(!isChecked)
+  }
 
-
-    return (
-        <div>
-            <input type="checkbox" onChange={ handleCheckboxChange } checked={ props.todo.checked} />
-            <input ref={ inputRef } type="text" value={ isEdit ? todoTitle : props.todo } onChange={ handleChange } disabled= { !isEdit } onBlur={ handleBlur } />
-            {!isEdit && <ButtonControl children={ "Edit" } onClick={ onButtonEditClick } />}
-            {isEdit && <ButtonControl children={ "Save" } onClick={ onButtonSaveClick} />}
-            <ButtonControl children={ "Delete" } onClick={ onButtonDelClick } />
-        </div>
-    );
+  return (
+    <div>
+      <input type="checkbox" onChange={handleCheckboxChange} checked={isChecked} />
+      <input ref={inputRef} type="text" value={todoTitle} onChange={handleChange} />
+      {!isEdit && <ButtonControl children={'Edit'} onClick={onButtonEditClick} />}
+      {isEdit && <ButtonControl children={'Save'} onClick={onButtonSaveClick} />}
+      <ButtonControl children={'Delete'} onClick={onButtonDelClick} />
+    </div>
+  )
 }

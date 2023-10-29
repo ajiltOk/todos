@@ -1,59 +1,100 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import TodoList from '../src/components/TodoList/TodoList'
 import AddTodo from '../src/components/AddTodo/AddTodo'
-import ButtonControl from './components/Button/ButtonControl'
-import uuid from 'react-uuid';
+import ButtonBlock from './components/ButtonsBlock/ButtonBlock'
+import uuid from 'react-uuid'
 
 function App() {
   const [todos, setTodos] = useState([])
 
+  const [active, setActive] = useState(false)
+
+  const [completed, setCompleted] = useState(false)
+
+  const filteredTodos = useMemo(() => {
+    if (active) {
+      return todos.filter((todo) => todo.checked === false)
+    } else if (completed) {
+      return todos.filter((todo) => todo.checked === true)
+    } else {
+      return todos
+    }
+  }, [todos, active, completed])
+
+  let counter = todos.filter((todo) => todo.checked === false).length
+
   function addTodo(value) {
-    setTodos(todos.concat([
-      {title: value,
-        completed: false,
-        checked: false,
-        id: uuid(),
-      }
-    ]))
+    setTodos(todos.concat([{ title: value, checked: false, id: uuid() }]))
   }
 
-  function removeTodo(idElem) {
-    setTodos(todos.filter((todo) => idElem !== todo.id))
+  function removeTodo(idTodo) {
+    setTodos(todos.filter((todo) => idTodo !== todo.id))
   }
-   
+
   function renameTodo(id, newTitle) {
-    setTodos(prevState => {
+    setTodos((prevState) => {
       let newState = [...prevState]
-      newState.map((element) => {
-        if(element.id === id) {
-          element.title = newTitle
+      newState.map((todo) => {
+        if (todo.id === id) {
+          todo.title = newTitle
         }
-        return element
+        return todo
       })
       return newState
     })
   }
 
-  function checkedTodo(index, newTitle) {
-    setTodos(prevState => {
+  function checkedTodo(id) {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          todo.checked = !todo.checked
+        }
+        return todo
+      })
+    )
+  }
 
-    })
+  function activeTodos() {
+    setCompleted(false)
+    setActive(true)
+  }
+
+  function completedTodos() {
+    setActive(false)
+    setCompleted(true)
+  }
+
+  function allTodos() {
+    setActive(false)
+    setCompleted(false)
   }
 
   return (
     <div>
       <h1>todos</h1>
-      <AddTodo onCreate={ addTodo } />
-      <TodoList todos={ todos }  removeTodo={ removeTodo } renameTodo={ renameTodo } />
+      <AddTodo onCreate={addTodo} />
+      <TodoList
+        todos={filteredTodos}
+        removeTodo={removeTodo}
+        renameTodo={renameTodo}
+        checkedTodo={checkedTodo}
+      />
       <div>
-        
-        <ButtonControl children={ "Active" } />
-        <ButtonControl children={ "Completed" } />
-        <ButtonControl children={ "All" } />
-        <ButtonControl children={ "Clear all" } />
+        {counter < 2 ? (
+          <span>{counter + ' item left'}</span>
+        ) : (
+          <span>{counter + ' items left'}</span>
+        )}
+        <ButtonBlock
+          todos={todos}
+          activeTodos={activeTodos}
+          completedTodos={completedTodos}
+          allTodos={allTodos}
+        />
       </div>
-  </div>
+    </div>
   )
 }
 
-export default App;
+export default App
